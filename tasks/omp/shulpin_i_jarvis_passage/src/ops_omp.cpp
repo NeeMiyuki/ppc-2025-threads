@@ -134,7 +134,7 @@ bool shulpin_i_jarvis_omp::JarvisOMPParallel::PreProcessingImpl() {
 
   uint32_t expected_count = task_data->output_count[0];
   output_jar.resize(expected_count);
-  
+
   return true;
 }
 
