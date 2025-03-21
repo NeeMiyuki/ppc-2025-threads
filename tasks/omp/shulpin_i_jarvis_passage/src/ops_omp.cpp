@@ -129,12 +129,12 @@ void shulpin_i_jarvis_omp::JarvisOMPParallel::MakeJarvisPassageOMP(
 
 bool shulpin_i_jarvis_omp::JarvisOMPParallel::PreProcessingImpl() {
   uint32_t points_count = task_data->inputs_count[0];
-  input_jar_.resize(points_count);
+  input_omp_.resize(points_count);
   auto* ptr_points = reinterpret_cast<shulpin_i_jarvis_omp::Point*>(task_data->inputs[0]);
-  std::memcpy(points.data(), ptr_points, points_count * sizeof(shulpin_i_jarvis_omp::Point));
+  std::memcpy(input_omp_.data(), ptr_points, points_count * sizeof(shulpin_i_jarvis_omp::Point));
 
-  uint32_t expected_count = task_data->output_count[0];
-  output_jar.resize(expected_count);
+  uint32_t expected_count = task_data->outputs_count[0];
+  output_omp_.resize(expected_count);
 
   return true;
 }
