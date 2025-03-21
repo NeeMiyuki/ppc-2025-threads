@@ -148,7 +148,7 @@ bool shulpin_i_jarvis_omp::JarvisOMPParallel::RunImpl() {
 }
 
 bool shulpin_i_jarvis_omp::JarvisOMPParallel::PostProcessingImpl() {
-  auto* result = reinterpret_cast<Point*>(task_data->outputs[0]);
-  std::ranges::copy(output_omp_.begin(), output_omp_.end(), result);
+  auto* output_ptr = reinterpret_cast<shulpin_i_jarvis_omp::Point*>(task_data->outputs[0]);
+  std::memcpy(output_ptr, output_omp_.data(), output_omp_.size() * sizeof(shulpin_i_jarvis_omp::Point));
   return true;
 }
