@@ -122,20 +122,19 @@ void shulpin_i_jarvis_omp::JarvisOMPParallel::MakeJarvisPassageOMP(
     active = candidate;
   } while (active != start);
 
+#pragma omp barrier
   output_jar = std::move(hull);
 }
 
 bool shulpin_i_jarvis_omp::JarvisOMPParallel::PreProcessingImpl() {
-  std::vector<shulpin_i_jarvis_omp::Point> tmp_input;
+  uint32_t points_count = task_data->inputs_count[0];
+  input_jar_.resize(points_count);
+  auto* ptr_points = reinterpret_cast<shulpin_i_jarvis_omp::Point*>(task_data->inputs[0]);
+  std::memcpy(points.data(), ptr_points, points_count * sizeof(shulpin_i_jarvis_omp::Point));
 
-  auto* tmp_data = reinterpret_cast<shulpin_i_jarvis_omp::Point*>(task_data->inputs[0]);
-  size_t tmp_size = task_data->inputs_count[0];
-  tmp_input.assign(tmp_data, tmp_data + tmp_size);
-
-  input_omp_ = tmp_input;
-
-  size_t output_size = task_data->outputs_count[0];
-  output_omp_.resize(output_size);
+  uint32_t expected_count = task_data->output_count[0];
+  output_jar.resize(expected_count);
+  
   return true;
 }
 
