@@ -149,6 +149,17 @@ bool shulpin_i_jarvis_omp::JarvisOMPParallel::RunImpl() {
 
 bool shulpin_i_jarvis_omp::JarvisOMPParallel::PostProcessingImpl() {
   auto* output_ptr = reinterpret_cast<shulpin_i_jarvis_omp::Point*>(task_data->outputs[0]);
+  std::vector<std::pair<double, double>> pairs;
+
+  // Преобразование через std::transform
+  std::transform(output_omp_.begin(), output_omp_.end(), std::back_inserter(pairs),
+                 [](const Point& p) { return std::make_pair(p.x, p.y); });
+
+  std::cout << "omp" << std::endl;
+  for (const auto& pair : pairs) {
+    std::cout << "(" << pair.first << ", " << pair.second << ")" << std::endl;
+  }
+  std::cout << std::endl;
   std::memcpy(output_ptr, output_omp_.data(), output_omp_.size() * sizeof(shulpin_i_jarvis_omp::Point));
   return true;
 }
