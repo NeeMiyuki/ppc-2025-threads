@@ -34,7 +34,7 @@ void VerifyResults(const std::vector<shulpin_i_jarvis_omp::Point> &expected,
     ASSERT_EQ(expected[i].y, result_omp[i].y);
   }
 }
-
+/*
 inline size_t CalculateIndex(size_t i, size_t tmp) { return (i < tmp) ? (i + tmp) : (i - tmp); }
 
 inline void ExpectEqualPoints(const shulpin_i_jarvis_omp::Point &expected, const shulpin_i_jarvis_omp::Point &seq,
@@ -55,7 +55,7 @@ void VerifyResultsCircle(const std::vector<shulpin_i_jarvis_omp::Point> &expecte
     ExpectEqualPoints(expected[i], result_seq[idx], result_omp[idx]);
   }
 }
-
+*/
 void MainTestBody(std::vector<shulpin_i_jarvis_omp::Point> &input, std::vector<shulpin_i_jarvis_omp::Point> &expected) {
   std::vector<shulpin_i_jarvis_omp::Point> result_seq(expected.size());
   std::vector<shulpin_i_jarvis_omp::Point> result_omp(expected.size());
@@ -106,7 +106,7 @@ void TestBodyFalse(std::vector<shulpin_i_jarvis_omp::Point> &input,
   shulpin_i_jarvis_omp::JarvisOMPParallel omp_task(task_data_par);
   ASSERT_EQ(omp_task.Validation(), false);
 }
-
+/*
 void TestBodyRandomCircle(std::vector<shulpin_i_jarvis_omp::Point> &input,
                           std::vector<shulpin_i_jarvis_omp::Point> &expected, size_t &num_points) {
   std::vector<shulpin_i_jarvis_omp::Point> result_seq(expected.size());
@@ -141,7 +141,7 @@ void TestBodyRandomCircle(std::vector<shulpin_i_jarvis_omp::Point> &input,
   omp_task.PostProcessing();
 
   VerifyResultsCircle(expected, result_seq, result_omp, num_points);
-}
+}*/
 }  // namespace
 
 TEST(shulpin_i_jarvis_omp, square_with_point) {
