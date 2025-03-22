@@ -106,28 +106,37 @@ void shulpin_i_jarvis_omp::JarvisOMPParallel::MakeJarvisPassageOMP(
   }
 
   int32_t active = start;
-  int32_t candidate = 0;
   std::vector<shulpin_i_jarvis_omp::Point> hull;
-  std::unordered_set<std::string> unique_points;  // Хранит уникальные точки
+  std::unordered_set<std::string> unique_points;
   hull.reserve(total);
 
   do {
     std::string point_key = std::to_string(input_jar[active].x) + "," + std::to_string(input_jar[active].y);
-
     if (unique_points.find(point_key) == unique_points.end()) {
       hull.push_back(input_jar[active]);
       unique_points.insert(point_key);
     }
 
-    candidate = (active + 1) % total;
+    int32_t candidate = -1;
+#pragma omp parallel
+    {
+      int32_t local_candidate = -1;
 
-#pragma omp parallel for shared(candidate)
-    for (int32_t index = 0; index < total; ++index) {
-      if (Orientation(input_jar[active], input_jar[index], input_jar[candidate]) == 2) {
+#pragma omp for nowait
+      for (int32_t index = 0; index < total; ++index) {
+        if (candidate == -1 || Orientation(input_jar[active], input_jar[index], input_jar[candidate]) == 2) {
+          local_candidate = index;
+        }
+      }
+
 #pragma omp critical
-        { candidate = index; }
+      {
+        if (candidate == -1 || Orientation(input_jar[active], input_jar[local_candidate], input_jar[candidate]) == 2) {
+          candidate = local_candidate;
+        }
       }
     }
+
     active = candidate;
   } while (active != start);
 
