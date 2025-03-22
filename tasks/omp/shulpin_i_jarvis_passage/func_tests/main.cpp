@@ -11,7 +11,7 @@
 #include "omp/shulpin_i_jarvis_passage/include/ops_omp.hpp"
 
 namespace {
-std::vector<shulpin_i_jarvis_omp::Point> GeneratePointsInCircle(size_t num_points,
+/*std::vector<shulpin_i_jarvis_omp::Point> GeneratePointsInCircle(size_t num_points,
                                                                 const shulpin_i_jarvis_omp::Point &center,
                                                                 double radius) {
   std::vector<shulpin_i_jarvis_omp::Point> points;
@@ -23,7 +23,7 @@ std::vector<shulpin_i_jarvis_omp::Point> GeneratePointsInCircle(size_t num_point
   }
   return points;
 }
-
+*/
 void VerifyResults(const std::vector<shulpin_i_jarvis_omp::Point> &expected,
                    const std::vector<shulpin_i_jarvis_omp::Point> &result_seq,
                    const std::vector<shulpin_i_jarvis_omp::Point> &result_omp) {
