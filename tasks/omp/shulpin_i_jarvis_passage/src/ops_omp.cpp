@@ -83,7 +83,7 @@ void shulpin_i_jarvis_omp::JarvisOMPParallel::MakeJarvisPassageOMP(
   size_t total_size_t = input_jar.size();
   int32_t total = static_cast<int32_t>(total_size_t);
   output_jar.clear();
-
+  std::cout << "total = " << total << std::endl;
   int32_t start = 0;
 #pragma omp parallel for
   for (int32_t i = 0; i < total; ++i) {
@@ -151,7 +151,14 @@ bool shulpin_i_jarvis_omp::JarvisOMPParallel::RunImpl() {
 bool shulpin_i_jarvis_omp::JarvisOMPParallel::PostProcessingImpl() {
   auto* output_ptr = reinterpret_cast<shulpin_i_jarvis_omp::Point*>(task_data->outputs[0]);
   std::vector<std::pair<double, double>> pairs;
+  std::transform(output_omp_.begin(), output_omp_.end(), std::back_inserter(pairs),
+                 [](const Point& p) { return std::make_pair(p.x, p.y); });
 
+  std::cout << "omp" << std::endl;
+  for (const auto& pair : pairs) {
+    std::cout << "(" << pair.first << ", " << pair.second << ")" << std::endl;
+  }
+  std::cout << std::endl;
   if (output_omp_.size() > task_data->outputs_count[0]) {
     std::cerr << "Ошибка: выход за границы памяти! output_omp_ = " << output_omp_.size()
               << ", expected = " << task_data->outputs_count[0] << std::endl;
