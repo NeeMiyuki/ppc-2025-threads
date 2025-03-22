@@ -110,7 +110,7 @@ void shulpin_i_jarvis_omp::JarvisOMPParallel::MakeJarvisPassageOMP(
   std::vector<shulpin_i_jarvis_omp::Point> hull;
   hull.reserve(total);
 
-do {
+  do {
     if (hull.empty() || hull.back().x != input_jar[active].x || hull.back().y != input_jar[active].y) {
       hull.push_back(input_jar[active]);
     }
