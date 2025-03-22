@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <cstring>
 #include <iostream>
+#include <set>
 #include <utility>
 #include <vector>
 
@@ -83,7 +84,7 @@ void shulpin_i_jarvis_omp::JarvisOMPParallel::MakeJarvisPassageOMP(
   size_t total_size_t = input_jar.size();
   int32_t total = static_cast<int32_t>(total_size_t);
   output_jar.clear();
-  std::cout << "total = " << total << std::endl;
+
   int32_t start = 0;
 #pragma omp parallel for
   for (int32_t i = 0; i < total; ++i) {
@@ -109,8 +110,11 @@ void shulpin_i_jarvis_omp::JarvisOMPParallel::MakeJarvisPassageOMP(
   std::vector<shulpin_i_jarvis_omp::Point> hull;
   hull.reserve(total);
 
-  do {
-    hull.push_back(input_jar[active]);
+do {
+    if (hull.empty() || hull.back().x != input_jar[active].x || hull.back().y != input_jar[active].y) {
+      hull.push_back(input_jar[active]);
+    }
+
     candidate = (active + 1) % total;
 
 #pragma omp parallel for shared(candidate)
