@@ -11,7 +11,7 @@
 #include "omp/shulpin_i_jarvis_passage/include/ops_omp.hpp"
 
 namespace {
-/*std::vector<shulpin_i_jarvis_omp::Point> GeneratePointsInCircle(size_t num_points,
+std::vector<shulpin_i_jarvis_omp::Point> GeneratePointsInCircle(size_t num_points,
                                                                 const shulpin_i_jarvis_omp::Point &center,
                                                                 double radius) {
   std::vector<shulpin_i_jarvis_omp::Point> points;
@@ -23,7 +23,7 @@ namespace {
   }
   return points;
 }
-*/
+
 void VerifyResults(const std::vector<shulpin_i_jarvis_omp::Point> &expected,
                    const std::vector<shulpin_i_jarvis_omp::Point> &result_seq,
                    const std::vector<shulpin_i_jarvis_omp::Point> &result_omp) {
@@ -34,7 +34,7 @@ void VerifyResults(const std::vector<shulpin_i_jarvis_omp::Point> &expected,
     ASSERT_EQ(expected[i].y, result_omp[i].y);
   }
 }
-/*
+
 inline size_t CalculateIndex(size_t i, size_t tmp) { return (i < tmp) ? (i + tmp) : (i - tmp); }
 
 inline void ExpectEqualPoints(const shulpin_i_jarvis_omp::Point &expected, const shulpin_i_jarvis_omp::Point &seq,
@@ -55,7 +55,7 @@ void VerifyResultsCircle(const std::vector<shulpin_i_jarvis_omp::Point> &expecte
     ExpectEqualPoints(expected[i], result_seq[idx], result_omp[idx]);
   }
 }
-*/
+
 void MainTestBody(std::vector<shulpin_i_jarvis_omp::Point> &input, std::vector<shulpin_i_jarvis_omp::Point> &expected) {
   std::vector<shulpin_i_jarvis_omp::Point> result_seq(expected.size());
   std::vector<shulpin_i_jarvis_omp::Point> result_omp(expected.size());
@@ -106,7 +106,7 @@ void TestBodyFalse(std::vector<shulpin_i_jarvis_omp::Point> &input,
   shulpin_i_jarvis_omp::JarvisOMPParallel omp_task(task_data_par);
   ASSERT_EQ(omp_task.Validation(), false);
 }
-/*
+
 void TestBodyRandomCircle(std::vector<shulpin_i_jarvis_omp::Point> &input,
                           std::vector<shulpin_i_jarvis_omp::Point> &expected, size_t &num_points) {
   std::vector<shulpin_i_jarvis_omp::Point> result_seq(expected.size());
@@ -206,7 +206,7 @@ TEST(shulpin_i_jarvis_omp, zero_points_validation_false) {
 
   TestBodyFalse(input, expected);
 }
-/*
+
 TEST(shulpin_i_jarvis_omp, circle_r10_p100) {
   shulpin_i_jarvis_omp::Point center{0, 0};
 
@@ -230,4 +230,3 @@ TEST(shulpin_i_jarvis_omps, circle_r10_p1000) {
 
   TestBodyRandomCircle(input, expected, num_points);
 }
-*/
