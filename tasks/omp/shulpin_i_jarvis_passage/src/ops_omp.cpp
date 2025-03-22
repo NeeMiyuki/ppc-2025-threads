@@ -140,8 +140,8 @@ void shulpin_i_jarvis_omp::JarvisOMPParallel::MakeJarvisPassageOMP(
 
     if (candidate == active) break;
     active = candidate;
-
-} while (active != start);
+  
+  } while (active != start);
 
 #pragma omp barrier
   output_jar = std::move(hull);
