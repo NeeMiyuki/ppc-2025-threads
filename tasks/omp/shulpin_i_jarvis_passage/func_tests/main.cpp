@@ -141,7 +141,7 @@ void TestBodyRandomCircle(std::vector<shulpin_i_jarvis_omp::Point> &input,
   omp_task.PostProcessing();
 
   VerifyResultsCircle(expected, result_seq, result_omp, num_points);
-}*/
+}
 }  // namespace
 
 TEST(shulpin_i_jarvis_omp, square_with_point) {
