@@ -6,7 +6,7 @@
 #include <cstdint>
 #include <cstring>
 #include <iostream>
-#include <set>
+#include <unordered_set>
 #include <utility>
 #include <vector>
 
@@ -108,11 +108,15 @@ void shulpin_i_jarvis_omp::JarvisOMPParallel::MakeJarvisPassageOMP(
   int32_t active = start;
   int32_t candidate = 0;
   std::vector<shulpin_i_jarvis_omp::Point> hull;
+  std::unordered_set<std::string> unique_points;  // Хранит уникальные точки
   hull.reserve(total);
 
   do {
-    if (hull.empty() || hull.back().x != input_jar[active].x || hull.back().y != input_jar[active].y) {
+    std::string point_key = std::to_string(input_jar[active].x) + "," + std::to_string(input_jar[active].y);
+
+    if (unique_points.find(point_key) == unique_points.end()) {
       hull.push_back(input_jar[active]);
+      unique_points.insert(point_key);
     }
 
     candidate = (active + 1) % total;
