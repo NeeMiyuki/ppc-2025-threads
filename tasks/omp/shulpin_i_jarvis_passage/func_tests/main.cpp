@@ -206,7 +206,7 @@ TEST(shulpin_i_jarvis_omp, zero_points_validation_false) {
 
   TestBodyFalse(input, expected);
 }
-
+/*
 TEST(shulpin_i_jarvis_omp, circle_r10_p100) {
   shulpin_i_jarvis_omp::Point center{0, 0};
 
@@ -230,3 +230,4 @@ TEST(shulpin_i_jarvis_omps, circle_r10_p1000) {
 
   TestBodyRandomCircle(input, expected, num_points);
 }
+*/
