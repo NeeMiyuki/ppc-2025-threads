@@ -5,7 +5,6 @@
 #include <cstddef>
 #include <cstdint>
 #include <cstring>
-#include <iostream>
 #include <unordered_set>
 #include <utility>
 #include <vector>
@@ -148,14 +147,16 @@ void shulpin_i_jarvis_omp::JarvisOMPParallel::MakeJarvisPassageOMP(
 }
 
 bool shulpin_i_jarvis_omp::JarvisOMPParallel::PreProcessingImpl() {
-  uint32_t points_count = task_data->inputs_count[0];
-  input_omp_.resize(points_count);
-  auto* ptr_points = reinterpret_cast<shulpin_i_jarvis_omp::Point*>(task_data->inputs[0]);
-  std::memcpy(input_omp_.data(), ptr_points, points_count * sizeof(shulpin_i_jarvis_omp::Point));
+  std::vector<shulpin_i_jarvis_omp::Point> tmp_input;
 
-  uint32_t expected_count = task_data->outputs_count[0];
-  output_omp_.resize(expected_count);
+  auto* tmp_data = reinterpret_cast<shulpin_i_jarvis_omp::Point*>(task_data->inputs[0]);
+  size_t tmp_size = task_data->inputs_count[0];
+  tmp_input.assign(tmp_data, tmp_data + tmp_size);
 
+  input_omp_ = tmp_input;
+
+  size_t output_size = task_data->outputs_count[0];
+  output_omp_.resize(output_size);
   return true;
 }
 
@@ -169,8 +170,7 @@ bool shulpin_i_jarvis_omp::JarvisOMPParallel::RunImpl() {
 }
 
 bool shulpin_i_jarvis_omp::JarvisOMPParallel::PostProcessingImpl() {
-  auto* output_ptr = reinterpret_cast<shulpin_i_jarvis_omp::Point*>(task_data->outputs[0]);
-  std::vector<std::pair<double, double>> pairs;
+  /*std::vector<std::pair<double, double>> pairs;
   std::transform(output_omp_.begin(), output_omp_.end(), std::back_inserter(pairs),
                  [](const Point& p) { return std::make_pair(p.x, p.y); });
 
@@ -183,8 +183,8 @@ bool shulpin_i_jarvis_omp::JarvisOMPParallel::PostProcessingImpl() {
     std::cerr << "Ошибка: выход за границы памяти! output_omp_ = " << output_omp_.size()
               << ", expected = " << task_data->outputs_count[0] << std::endl;
     return false;
-  }
-  std::cout << std::endl;
-  std::memcpy(output_ptr, output_omp_.data(), output_omp_.size() * sizeof(shulpin_i_jarvis_omp::Point));
+  }*/
+  auto* result = reinterpret_cast<Point*>(task_data->outputs[0]);
+  std::ranges::copy(output_omp_.begin(), output_omp_.end(), result);
   return true;
 }
