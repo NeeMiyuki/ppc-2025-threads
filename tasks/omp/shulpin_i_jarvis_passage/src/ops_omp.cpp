@@ -5,6 +5,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <cstring>
+#include <omp.h>
 #include <string>
 #include <unordered_set>
 #include <utility>
