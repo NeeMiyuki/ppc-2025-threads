@@ -1,11 +1,12 @@
 #include "omp/shulpin_i_jarvis_passage/include/ops_omp.hpp"
 
+#include <omp.h>
+
 #include <algorithm>
 #include <cmath>
 #include <cstddef>
 #include <cstdint>
 #include <cstring>
-#include <omp.h>
 #include <string>
 #include <unordered_set>
 #include <utility>
