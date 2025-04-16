@@ -16,16 +16,11 @@ struct Point {
   Point(double x_coordinate, double y_coordinate) : x(x_coordinate), y(y_coordinate) {}
 };
 
-struct PointHash {
-  size_t operator()(const Point& p) const {
-    size_t hx = std::hash<double>{}(p.x);
-    size_t hy = std::hash<double>{}(p.y);
-    return hx ^ (hy << 1);
-  }
-};
+struct Candidate {
+  int index;
 
-struct PointEqual {
-  bool operator()(const Point& a, const Point& b) const { return a.x == b.x && a.y == b.y; }
+  Candidate() : index(-1) {}
+  Candidate(int idx) : index(idx) {}
 };
 
 class JarvisSequential : public ppc::core::Task {
