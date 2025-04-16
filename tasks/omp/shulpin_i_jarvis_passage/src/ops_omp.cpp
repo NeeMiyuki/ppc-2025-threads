@@ -78,7 +78,7 @@ bool shulpin_i_jarvis_omp::JarvisSequential::PostProcessingImpl() {
   std::ranges::copy(output_seq_.begin(), output_seq_.end(), result);
   return true;
 }
-
+// clang-format off
 #pragma omp declare reduction(SelectBest : Candidate : \
   omp_out = (Orientation(current, input_jar[omp_in.index], input_jar[omp_out.index]) == 2 ? omp_in : omp_out)) \
   initializer(omp_priv = omp_orig)
@@ -145,7 +145,7 @@ bool shulpin_i_jarvis_omp::JarvisOMPParallel::PreProcessingImpl() {
   output_omp_.resize(output_size);
   return true;
 }
-
+// clang-format on
 bool shulpin_i_jarvis_omp::JarvisOMPParallel::ValidationImpl() {
   return (task_data->inputs_count[0] >= 3) && (task_data->inputs[0] != nullptr);
 }
