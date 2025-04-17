@@ -1,5 +1,5 @@
 #include "seq/shulpin_i_Jarvis_passage/include/ops_seq.hpp"
-
+// clang-format off
 #include <algorithm>
 #include <cmath>
 #include <cstddef>
@@ -13,7 +13,7 @@ int shulpin_i_jarvis_seq::JarvisSequential::Orientation(const Point& p, const Po
   }
   return (val > 0) ? 1 : 2;
 }
-// clang-format off
+
 void shulpin_i_jarvis_seq::JarvisSequential::MakeJarvisPassage(std::vector<shulpin_i_jarvis_seq::Point>& input_jar,
                                                                std::vector<shulpin_i_jarvis_seq::Point>& output_jar) {
     std::vector<shulpin_i_jarvis_seq::Point>& input_jar,
@@ -53,7 +53,7 @@ void shulpin_i_jarvis_seq::JarvisSequential::MakeJarvisPassage(std::vector<shulp
     active = candidate;
   } while (active != start);
 }
-// clang-format on
+
 bool shulpin_i_jarvis_seq::JarvisSequential::PreProcessingImpl() {
   std::vector<shulpin_i_jarvis_seq::Point> tmp_input;
 
