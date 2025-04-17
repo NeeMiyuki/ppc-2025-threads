@@ -81,53 +81,71 @@ bool shulpin_i_jarvis_omp::JarvisSequential::PostProcessingImpl() {
   return true;
 }
 // clang-format off
-#pragma omp declare reduction(SelectBest : Candidate : \
-  omp_out = (Orientation(current, input_jar[omp_in.index], input_jar[omp_out.index]) == 2 ? omp_in : omp_out)) \
-  initializer(omp_priv = omp_orig)
-
 void shulpin_i_jarvis_omp::JarvisOMPParallel::MakeJarvisPassageOMP(
-    std::vector<shulpin_i_jarvis_omp::Point>& input_jar, std::vector<shulpin_i_jarvis_omp::Point>& output_jar) {
-
+    std::vector<shulpin_i_jarvis_omp::Point>& input_jar,
+    std::vector<shulpin_i_jarvis_omp::Point>& output_jar) {
+  
   int total = static_cast<int>(input_jar.size());
   output_jar.clear();
 
-  std::vector<Point> hull;
+  std::vector<shulpin_i_jarvis_omp::Point> hull;
   hull.reserve(total);
 
-  // 1. Найдём стартовую точку
   int start = 0;
-#pragma omp parallel for
   for (int i = 1; i < total; ++i) {
     const auto& a = input_jar[i];
     const auto& b = input_jar[start];
     if (a.x < b.x || (a.x == b.x && a.y < b.y)) {
-#pragma omp critical
-      {
-        if (a.x < input_jar[start].x || (a.x == input_jar[start].x && a.y < input_jar[start].y)) {
-          start = i;
-        }
-      }
+      start = i;
     }
   }
 
   int active = start;
 
+  // Локальные множества для уникальных точек в каждом потоке
+  std::vector<std::unordered_set<shulpin_i_jarvis_omp::Point, shulpin_i_jarvis_omp::PointHash, shulpin_i_jarvis_omp::PointEqual>> local_unique_points(omp_get_max_threads());
+
   do {
     const Point& current = input_jar[active];
-    hull.push_back(current);
-
-    Candidate best((active + 1) % total);
-
-#pragma omp parallel for reduction(SelectBest:best)
-    for (int i = 0; i < total; ++i) {
-      if (i == active) continue;
-      if (Orientation(current, input_jar[i], input_jar[best.index]) == 2) {
-        best = Candidate(i);
+    // Проверяем, что точка уникальна в текущем потоке
+    bool is_unique = true;
+    for (int tid = 0; tid < omp_get_max_threads(); ++tid) {
+      if (local_unique_points[tid].find(current) != local_unique_points[tid].end()) {
+        is_unique = false;
+        break;
       }
     }
 
-    if (best.index == active || best.index == -1) break;
-    active = best.index;
+    if (is_unique) {
+      hull.push_back(current);
+      // Добавляем точку в локальные множества
+      local_unique_points[omp_get_thread_num()].insert(current);
+    }
+
+    int candidate = (active + 1) % total;
+
+#pragma omp parallel
+    {
+      int local_candidate = candidate;
+
+#pragma omp for nowait
+      for (int i = 0; i < total; ++i) {
+        if (i == active) continue;
+        if (Orientation(current, input_jar[i], input_jar[local_candidate]) == 2) {
+          local_candidate = i;
+        }
+      }
+
+#pragma omp critical
+      {
+        if (Orientation(current, input_jar[local_candidate], input_jar[candidate]) == 2) {
+          candidate = local_candidate;
+        }
+      }
+    }
+
+    if (candidate == active) break;
+    active = candidate;
 
   } while (active != start);
 
