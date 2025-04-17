@@ -4,6 +4,7 @@
 #include <cmath>
 #include <cstddef>
 #include <vector>
+#include <unordered_set>
 
 int shulpin_i_jarvis_seq::JarvisSequential::Orientation(const Point& p, const Point& q, const Point& r) {
   double val = ((q.y - p.y) * (r.x - q.x)) - ((q.x - p.x) * (r.y - q.y));
@@ -12,11 +13,18 @@ int shulpin_i_jarvis_seq::JarvisSequential::Orientation(const Point& p, const Po
   }
   return (val > 0) ? 1 : 2;
 }
-
+// clang-format off
 void shulpin_i_jarvis_seq::JarvisSequential::MakeJarvisPassage(std::vector<shulpin_i_jarvis_seq::Point>& input_jar,
                                                                std::vector<shulpin_i_jarvis_seq::Point>& output_jar) {
+    std::vector<shulpin_i_jarvis_seq::Point>& input_jar,
+    std::vector<shulpin_i_jarvis_seq::Point>& output_jar) {
+
   size_t total = input_jar.size();
   output_jar.clear();
+
+  std::unordered_set<shulpin_i_jarvis_seq::Point, 
+                     shulpin_i_jarvis_seq::PointHash, 
+                     shulpin_i_jarvis_seq::PointEqual> unique_points;
 
   size_t start = 0;
   for (size_t i = 1; i < total; ++i) {
@@ -28,10 +36,15 @@ void shulpin_i_jarvis_seq::JarvisSequential::MakeJarvisPassage(std::vector<shulp
 
   size_t active = start;
   do {
-    output_jar.emplace_back(input_jar[active]);
-    size_t candidate = (active + 1) % total;
+    const auto& current = input_jar[active];
+    if (unique_points.find(current) == unique_points.end()) {
+      output_jar.emplace_back(current);
+      unique_points.insert(current);
+    }
 
+    size_t candidate = (active + 1) % total;
     for (size_t index = 0; index < total; ++index) {
+      if (index == active) continue;
       if (Orientation(input_jar[active], input_jar[index], input_jar[candidate]) == 2) {
         candidate = index;
       }
@@ -40,7 +53,7 @@ void shulpin_i_jarvis_seq::JarvisSequential::MakeJarvisPassage(std::vector<shulp
     active = candidate;
   } while (active != start);
 }
-
+// clang-format on
 bool shulpin_i_jarvis_seq::JarvisSequential::PreProcessingImpl() {
   std::vector<shulpin_i_jarvis_seq::Point> tmp_input;
 
