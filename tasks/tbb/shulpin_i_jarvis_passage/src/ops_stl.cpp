@@ -11,7 +11,7 @@
 #include <vector>
 
 #include "core/util/include/util.hpp"
-
+// clang-format off
 namespace {
 int Orientation(const shulpin_i_jarvis_tbb::Point& p, const shulpin_i_jarvis_tbb::Point& q,
                 const shulpin_i_jarvis_tbb::Point& r) {
@@ -316,3 +316,4 @@ bool shulpin_i_jarvis_tbb::JarvisSTLParallel::PostProcessingImpl() {
   std::ranges::copy(output_stl_.begin(), output_stl_.end(), result);
   return true;
 }
+// clang-format on
