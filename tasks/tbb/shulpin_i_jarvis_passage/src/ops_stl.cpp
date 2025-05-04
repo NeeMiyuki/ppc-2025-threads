@@ -23,9 +23,11 @@ int Orientation(const shulpin_i_jarvis_tbb::Point& p, const shulpin_i_jarvis_tbb
 }
 #ifdef __linux__
 void LinuxFindNextPointThread(int tid, const std::vector<shulpin_i_jarvis_tbb::Point>& input_jar,
-                              shulpin_i_jarvis_tbb::Point prev_point,
-                              std::vector<shulpin_i_jarvis_tbb::Point>& candidates, std::vector<bool>& thread_ready,
-                              std::vector<bool>& thread_done, std::mutex& mtx, std::condition_variable& cv, bool& stop,
+                              const shulpin_i_jarvis_tbb::Point& prev_point,
+                              std::vector<shulpin_i_jarvis_tbb::Point>& candidates,
+                              std::vector<bool>& thread_ready,
+                              std::vector<bool>& thread_done,
+                              std::mutex& mtx, std::condition_variable& cv, bool& stop,
                               int num_threads, int chunk_size) {
   while (true) {
     std::unique_lock<std::mutex> lock(mtx);
@@ -152,9 +154,9 @@ void shulpin_i_jarvis_tbb::JarvisSTLParallel::MakeJarvisPassageSTL(std::vector<P
   bool stop = false;
 
   for (int i = 0; i < num_threads; ++i) {
-    threads.emplace_back(LinuxFindNextPointThread, i, std::cref(input_jar), prev_point, std::ref(candidates),
-                         std::ref(thread_ready), std::ref(thread_done), std::ref(mtx), std::ref(cv), std::ref(stop),
-                         num_threads, chunk_size);
+    threads.emplace_back(LinuxFindNextPointThread, i, std::cref(input_jar), std::ref(prev_point),
+                         std::ref(candidates), std::ref(thread_ready), std::ref(thread_done),
+                         std::ref(mtx), std::ref(cv), std::ref(stop), num_threads, chunk_size);
   }
 
   do {
