@@ -13,8 +13,8 @@
 #include "core/task/include/task.hpp"
 #include "tbb/shulpin_i_jarvis_passage/include/ops_stl.hpp"
 
-void shulpin_stl_test_module::VerifyResults(const std::vector<shulpin_i_jarvis_stl::Point> &expected,
-                                            const std::vector<shulpin_i_jarvis_stl::Point> &result_tbb) {
+void shulpin_omp_test_module::VerifyResults(const std::vector<shulpin_i_jarvis_omp::Point> &expected,
+                                            const std::vector<shulpin_i_jarvis_omp::Point> &result_tbb) {
   for (const auto &p : result_tbb) {
     bool found = false;
     for (const auto &q : expected) {
@@ -27,10 +27,10 @@ void shulpin_stl_test_module::VerifyResults(const std::vector<shulpin_i_jarvis_s
   }
 }
 
-void shulpin_stl_test_module::MainTestBody(std::vector<shulpin_i_jarvis_stl::Point> &input,
-                                           std::vector<shulpin_i_jarvis_stl::Point> &expected) {
-  std::vector<shulpin_i_jarvis_stl::Point> result_seq(expected.size());
-  std::vector<shulpin_i_jarvis_stl::Point> result_tbb(expected.size());
+void shulpin_omp_test_module::MainTestBody(std::vector<shulpin_i_jarvis_omp::Point> &input,
+                                           std::vector<shulpin_i_jarvis_omp::Point> &expected) {
+  std::vector<shulpin_i_jarvis_omp::Point> result_seq(expected.size());
+  std::vector<shulpin_i_jarvis_omp::Point> result_tbb(expected.size());
 
   auto task_data_seq = std::make_shared<ppc::core::TaskData>();
 
@@ -40,7 +40,7 @@ void shulpin_stl_test_module::MainTestBody(std::vector<shulpin_i_jarvis_stl::Poi
   task_data_seq->outputs.emplace_back(reinterpret_cast<uint8_t *>(result_seq.data()));
   task_data_seq->outputs_count.emplace_back(static_cast<uint32_t>(result_seq.size()));
 
-  shulpin_i_jarvis_stl::JarvisSequential seq_task(task_data_seq);
+  shulpin_i_jarvis_omp::JarvisSequential seq_task(task_data_seq);
   ASSERT_EQ(seq_task.Validation(), true);
   seq_task.PreProcessing();
   seq_task.Run();
@@ -54,18 +54,18 @@ void shulpin_stl_test_module::MainTestBody(std::vector<shulpin_i_jarvis_stl::Poi
   task_data_par->outputs.emplace_back(reinterpret_cast<uint8_t *>(result_tbb.data()));
   task_data_par->outputs_count.emplace_back(static_cast<uint32_t>(result_tbb.size()));
 
-  shulpin_i_jarvis_stl::JarvisSTLParallel stl_task(task_data_par);
+  shulpin_i_jarvis_omp::JarvisSTLParallel stl_task(task_data_par);
   ASSERT_EQ(stl_task.Validation(), true);
   stl_task.PreProcessing();
   stl_task.Run();
   stl_task.PostProcessing();
 
-  shulpin_stl_test_module::VerifyResults(result_seq, result_tbb);
+  shulpin_omp_test_module::VerifyResults(result_seq, result_tbb);
 }
 
-std::vector<shulpin_i_jarvis_stl::Point> shulpin_stl_test_module::GeneratePointsInCircle(
-    size_t num_points, const shulpin_i_jarvis_stl::Point &center, double radius) {
-  std::vector<shulpin_i_jarvis_stl::Point> points;
+std::vector<shulpin_i_jarvis_omp::Point> shulpin_omp_test_module::GeneratePointsInCircle(
+    size_t num_points, const shulpin_i_jarvis_omp::Point &center, double radius) {
+  std::vector<shulpin_i_jarvis_omp::Point> points;
   for (size_t i = 0; i < num_points; ++i) {
     double angle = 2.0 * std::numbers::pi * static_cast<double>(i) / static_cast<double>(num_points);
     double x = center.x + (radius * std::cos(angle));
@@ -75,11 +75,11 @@ std::vector<shulpin_i_jarvis_stl::Point> shulpin_stl_test_module::GeneratePoints
   return points;
 }
 
-void shulpin_stl_test_module::TestBodyRandomCircle(std::vector<shulpin_i_jarvis_stl::Point> &input,
-                                                   std::vector<shulpin_i_jarvis_stl::Point> &expected,
+void shulpin_omp_test_module::TestBodyRandomCircle(std::vector<shulpin_i_jarvis_omp::Point> &input,
+                                                   std::vector<shulpin_i_jarvis_omp::Point> &expected,
                                                    size_t &num_points) {
-  std::vector<shulpin_i_jarvis_stl::Point> result_seq(expected.size());
-  std::vector<shulpin_i_jarvis_stl::Point> result_tbb(expected.size());
+  std::vector<shulpin_i_jarvis_omp::Point> result_seq(expected.size());
+  std::vector<shulpin_i_jarvis_omp::Point> result_tbb(expected.size());
 
   auto task_data_seq = std::make_shared<ppc::core::TaskData>();
 
@@ -89,7 +89,7 @@ void shulpin_stl_test_module::TestBodyRandomCircle(std::vector<shulpin_i_jarvis_
   task_data_seq->outputs.emplace_back(reinterpret_cast<uint8_t *>(result_seq.data()));
   task_data_seq->outputs_count.emplace_back(static_cast<uint32_t>(result_seq.size()));
 
-  shulpin_i_jarvis_stl::JarvisSequential seq_task(task_data_seq);
+  shulpin_i_jarvis_omp::JarvisSequential seq_task(task_data_seq);
   ASSERT_EQ(seq_task.Validation(), true);
   seq_task.PreProcessing();
   seq_task.Run();
@@ -103,18 +103,18 @@ void shulpin_stl_test_module::TestBodyRandomCircle(std::vector<shulpin_i_jarvis_
   task_data_par->outputs.emplace_back(reinterpret_cast<uint8_t *>(result_tbb.data()));
   task_data_par->outputs_count.emplace_back(static_cast<uint32_t>(result_tbb.size()));
 
-  shulpin_i_jarvis_stl::JarvisSTLParallel stl_task(task_data_par);
+  shulpin_i_jarvis_omp::JarvisSTLParallel stl_task(task_data_par);
   ASSERT_EQ(stl_task.Validation(), true);
   stl_task.PreProcessing();
   stl_task.Run();
   stl_task.PostProcessing();
 
-  shulpin_stl_test_module::VerifyResults(result_seq, result_tbb);
+  shulpin_omp_test_module::VerifyResults(result_seq, result_tbb);
 }
 
-void shulpin_stl_test_module::TestBodyFalse(std::vector<shulpin_i_jarvis_stl::Point> &input,
-                                            std::vector<shulpin_i_jarvis_stl::Point> &expected) {
-  std::vector<shulpin_i_jarvis_stl::Point> result_tbb(expected.size());
+void shulpin_omp_test_module::TestBodyFalse(std::vector<shulpin_i_jarvis_omp::Point> &input,
+                                            std::vector<shulpin_i_jarvis_omp::Point> &expected) {
+  std::vector<shulpin_i_jarvis_omp::Point> result_tbb(expected.size());
 
   auto task_data_par = std::make_shared<ppc::core::TaskData>();
 
@@ -124,12 +124,12 @@ void shulpin_stl_test_module::TestBodyFalse(std::vector<shulpin_i_jarvis_stl::Po
   task_data_par->outputs.emplace_back(reinterpret_cast<uint8_t *>(result_tbb.data()));
   task_data_par->outputs_count.emplace_back(static_cast<uint32_t>(result_tbb.size()));
 
-  shulpin_i_jarvis_stl::JarvisSTLParallel stl_task(task_data_par);
+  shulpin_i_jarvis_omp::JarvisSTLParallel stl_task(task_data_par);
   ASSERT_EQ(stl_task.Validation(), false);
 }
 
-int shulpin_stl_test_module::Orientation(const shulpin_i_jarvis_stl::Point &p, const shulpin_i_jarvis_stl::Point &q,
-                                         const shulpin_i_jarvis_stl::Point &r) {
+int shulpin_omp_test_module::Orientation(const shulpin_i_jarvis_omp::Point &p, const shulpin_i_jarvis_omp::Point &q,
+                                         const shulpin_i_jarvis_omp::Point &r) {
   double val = ((q.y - p.y) * (r.x - q.x)) - ((q.x - p.x) * (r.y - q.y));
   if (std::fabs(val) < 1e-9) {
     return 0;
@@ -137,9 +137,9 @@ int shulpin_stl_test_module::Orientation(const shulpin_i_jarvis_stl::Point &p, c
   return (val > 0) ? 1 : 2;
 }
 
-std::vector<shulpin_i_jarvis_stl::Point> shulpin_stl_test_module::ComputeConvexHull(
-    std::vector<shulpin_i_jarvis_stl::Point> raw_points) {
-  std::vector<shulpin_i_jarvis_stl::Point> convex_shell{};
+std::vector<shulpin_i_jarvis_omp::Point> shulpin_omp_test_module::ComputeConvexHull(
+    std::vector<shulpin_i_jarvis_omp::Point> raw_points) {
+  std::vector<shulpin_i_jarvis_omp::Point> convex_shell{};
   const size_t count = raw_points.size();
 
   size_t ref_idx = 0;
@@ -165,7 +165,7 @@ std::vector<shulpin_i_jarvis_stl::Point> shulpin_stl_test_module::ComputeConvexH
         continue;
       }
 
-      int orient = shulpin_stl_test_module::Orientation(raw_points[current], raw_points[trial], raw_points[next]);
+      int orient = shulpin_omp_test_module::Orientation(raw_points[current], raw_points[trial], raw_points[next]);
       if (orient == 2) {
         next = trial;
       }
@@ -179,8 +179,8 @@ std::vector<shulpin_i_jarvis_stl::Point> shulpin_stl_test_module::ComputeConvexH
   return convex_shell;
 }
 
-std::vector<shulpin_i_jarvis_stl::Point> shulpin_stl_test_module::GenerateRandomPoints(size_t num_points) {
-  std::vector<shulpin_i_jarvis_stl::Point> points;
+std::vector<shulpin_i_jarvis_omp::Point> shulpin_omp_test_module::GenerateRandomPoints(size_t num_points) {
+  std::vector<shulpin_i_jarvis_omp::Point> points;
   std::random_device rd;
   std::mt19937 gen(rd());
   std::uniform_int_distribution<int> dist(-10000, 10000);
@@ -194,9 +194,9 @@ std::vector<shulpin_i_jarvis_stl::Point> shulpin_stl_test_module::GenerateRandom
   return points;
 }
 
-void shulpin_stl_test_module::RandomTestBody(std::vector<shulpin_i_jarvis_stl::Point> &input,
-                                             std::vector<shulpin_i_jarvis_stl::Point> &expected) {
-  std::vector<shulpin_i_jarvis_stl::Point> result_tbb(expected.size());
+void shulpin_omp_test_module::RandomTestBody(std::vector<shulpin_i_jarvis_omp::Point> &input,
+                                             std::vector<shulpin_i_jarvis_omp::Point> &expected) {
+  std::vector<shulpin_i_jarvis_omp::Point> result_tbb(expected.size());
 
   auto task_data_par = std::make_shared<ppc::core::TaskData>();
 
@@ -206,18 +206,18 @@ void shulpin_stl_test_module::RandomTestBody(std::vector<shulpin_i_jarvis_stl::P
   task_data_par->outputs.emplace_back(reinterpret_cast<uint8_t *>(result_tbb.data()));
   task_data_par->outputs_count.emplace_back(static_cast<uint32_t>(result_tbb.size()));
 
-  shulpin_i_jarvis_stl::JarvisSTLParallel stl_task(task_data_par);
+  shulpin_i_jarvis_omp::JarvisSTLParallel stl_task(task_data_par);
   ASSERT_EQ(stl_task.Validation(), true);
   stl_task.PreProcessing();
   stl_task.Run();
   stl_task.PostProcessing();
 
-  shulpin_stl_test_module::VerifyResults(expected, result_tbb);
+  shulpin_omp_test_module::VerifyResults(expected, result_tbb);
 }
 
-std::vector<shulpin_i_jarvis_stl::Point> shulpin_stl_test_module::PerfRandomGenerator(size_t num_points, int from,
+std::vector<shulpin_i_jarvis_omp::Point> shulpin_omp_test_module::PerfRandomGenerator(size_t num_points, int from,
                                                                                       int to) {
-  std::vector<shulpin_i_jarvis_stl::Point> points;
+  std::vector<shulpin_i_jarvis_omp::Point> points;
   std::random_device rd;
   std::mt19937 gen(rd());
   std::uniform_int_distribution<int> dist(from, to);

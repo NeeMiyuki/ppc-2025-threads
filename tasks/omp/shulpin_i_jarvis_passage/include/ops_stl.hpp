@@ -7,7 +7,7 @@
 
 #include "core/task/include/task.hpp"
 
-namespace shulpin_i_jarvis_stl {
+namespace shulpin_i_jarvis_omp {
 
 struct Point {
   double x, y;
@@ -18,7 +18,7 @@ struct Point {
 };
 
 struct PointHash {
-  size_t operator()(const shulpin_i_jarvis_stl::Point& p) const {
+  size_t operator()(const shulpin_i_jarvis_omp::Point& p) const {
     size_t hx = std::hash<double>{}(p.x);
     size_t hy = std::hash<double>{}(p.y);
     return hx ^ (hy << 1);
@@ -36,11 +36,11 @@ class JarvisSequential : public ppc::core::Task {
   bool ValidationImpl() override;
   bool RunImpl() override;
   bool PostProcessingImpl() override;
-  static void MakeJarvisPassage(std::vector<shulpin_i_jarvis_stl::Point>& input,
-                                std::vector<shulpin_i_jarvis_stl::Point>& output);
+  static void MakeJarvisPassage(std::vector<shulpin_i_jarvis_omp::Point>& input,
+                                std::vector<shulpin_i_jarvis_omp::Point>& output);
 
  private:
-  std::vector<shulpin_i_jarvis_stl::Point> input_seq_, output_seq_;
+  std::vector<shulpin_i_jarvis_omp::Point> input_seq_, output_seq_;
 };
 
 class JarvisSTLParallel : public ppc::core::Task {
@@ -50,11 +50,11 @@ class JarvisSTLParallel : public ppc::core::Task {
   bool ValidationImpl() override;
   bool RunImpl() override;
   bool PostProcessingImpl() override;
-  static void MakeJarvisPassageSTL(std::vector<shulpin_i_jarvis_stl::Point>& input,
-                                   std::vector<shulpin_i_jarvis_stl::Point>& output);
+  static void MakeJarvisPassageSTL(std::vector<shulpin_i_jarvis_omp::Point>& input,
+                                   std::vector<shulpin_i_jarvis_omp::Point>& output);
 
  private:
-  std::vector<shulpin_i_jarvis_stl::Point> input_stl_, output_stl_;
+  std::vector<shulpin_i_jarvis_omp::Point> input_stl_, output_stl_;
 };
 
-}  // namespace shulpin_i_jarvis_stl
+}  // namespace shulpin_i_jarvis_omp

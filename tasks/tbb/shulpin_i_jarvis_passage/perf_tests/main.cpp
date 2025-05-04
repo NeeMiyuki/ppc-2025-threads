@@ -17,11 +17,11 @@ constexpr int kBound = 1000;
 
 TEST(shulpin_i_jarvis_stl_func, test_pipeline_run) {
   size_t num_points = 5000000;
-  std::vector<shulpin_i_jarvis_stl::Point> hull = {
+  std::vector<shulpin_i_jarvis_tbb::Point> hull = {
       {-kBound, kBound}, {kBound, kBound}, {kBound, -kBound}, {-kBound, -kBound}};
-  std::vector<shulpin_i_jarvis_stl::Point> input =
-      shulpin_stl_test_module::PerfRandomGenerator(num_points, -kBound + k_, kBound - k_);
-  std::vector<shulpin_i_jarvis_stl::Point> out(input.size());
+  std::vector<shulpin_i_jarvis_tbb::Point> input =
+      shulpin_tbb_test_module::PerfRandomGenerator(num_points, -kBound + k_, kBound - k_);
+  std::vector<shulpin_i_jarvis_tbb::Point> out(input.size());
   input.insert(input.end(), hull.begin(), hull.end());
 
   auto task_data_par = std::make_shared<ppc::core::TaskData>();
@@ -30,7 +30,7 @@ TEST(shulpin_i_jarvis_stl_func, test_pipeline_run) {
   task_data_par->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
   task_data_par->outputs_count.emplace_back(out.size());
 
-  auto test_task_stl = std::make_shared<shulpin_i_jarvis_stl::JarvisSTLParallel>(task_data_par);
+  auto test_task_stl = std::make_shared<shulpin_i_jarvis_tbb::JarvisSTLParallel>(task_data_par);
 
   auto perf_attr = std::make_shared<ppc::core::PerfAttr>();
   perf_attr->num_running = 10;
@@ -55,11 +55,11 @@ TEST(shulpin_i_jarvis_stl_func, test_pipeline_run) {
 
 TEST(shulpin_i_jarvis_stl_func, test_task_run) {
   size_t num_points = 5000000;
-  std::vector<shulpin_i_jarvis_stl::Point> hull = {
+  std::vector<shulpin_i_jarvis_tbb::Point> hull = {
       {-kBound, kBound}, {kBound, kBound}, {kBound, -kBound}, {-kBound, -kBound}};
-  std::vector<shulpin_i_jarvis_stl::Point> input =
-      shulpin_stl_test_module::PerfRandomGenerator(num_points, -kBound + k_, kBound - k_);
-  std::vector<shulpin_i_jarvis_stl::Point> out(input.size());
+  std::vector<shulpin_i_jarvis_tbb::Point> input =
+      shulpin_tbb_test_module::PerfRandomGenerator(num_points, -kBound + k_, kBound - k_);
+  std::vector<shulpin_i_jarvis_tbb::Point> out(input.size());
   input.insert(input.end(), hull.begin(), hull.end());
 
   auto task_data_par = std::make_shared<ppc::core::TaskData>();
@@ -68,7 +68,7 @@ TEST(shulpin_i_jarvis_stl_func, test_task_run) {
   task_data_par->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
   task_data_par->outputs_count.emplace_back(out.size());
 
-  auto test_task_stl = std::make_shared<shulpin_i_jarvis_stl::JarvisSTLParallel>(task_data_par);
+  auto test_task_stl = std::make_shared<shulpin_i_jarvis_tbb::JarvisSTLParallel>(task_data_par);
 
   auto perf_attr = std::make_shared<ppc::core::PerfAttr>();
   perf_attr->num_running = 10;

@@ -13,8 +13,8 @@
 #include "core/util/include/util.hpp"
 
 namespace {
-int Orientation(const shulpin_i_jarvis_stl::Point& p, const shulpin_i_jarvis_stl::Point& q,
-                const shulpin_i_jarvis_stl::Point& r) {
+int Orientation(const shulpin_i_jarvis_omp::Point& p, const shulpin_i_jarvis_omp::Point& q,
+                const shulpin_i_jarvis_omp::Point& r) {
   double val = ((q.y - p.y) * (r.x - q.x)) - ((q.x - p.x) * (r.y - q.y));
   if (std::fabs(val) < 1e-9) {
     return 0;
@@ -22,9 +22,9 @@ int Orientation(const shulpin_i_jarvis_stl::Point& p, const shulpin_i_jarvis_stl
   return (val > 0) ? 1 : 2;
 }
 #ifdef __linux__
-inline void LinuxFindNextPointThread(int tid, const std::vector<shulpin_i_jarvis_stl::Point>& input_jar,
-                                     shulpin_i_jarvis_stl::Point prev_point,
-                                     std::vector<shulpin_i_jarvis_stl::Point>& candidates,
+inline void LinuxFindNextPointThread(int tid, const std::vector<shulpin_i_jarvis_omp::Point>& input_jar,
+                                     shulpin_i_jarvis_omp::Point prev_point,
+                                     std::vector<shulpin_i_jarvis_omp::Point>& candidates,
                                      std::vector<bool>& thread_ready, std::vector<bool>& thread_done, std::mutex& mtx,
                                      std::condition_variable& cv, bool& stop, int num_threads, int chunk_size) {
   while (true) {
@@ -35,7 +35,7 @@ inline void LinuxFindNextPointThread(int tid, const std::vector<shulpin_i_jarvis
 
     int start = tid * chunk_size;
     int end = (tid == num_threads - 1) ? static_cast<int>(input_jar.size()) : (tid + 1) * chunk_size;
-    shulpin_i_jarvis_stl::Point candidate = input_jar[start];
+    shulpin_i_jarvis_omp::Point candidate = input_jar[start];
 
     for (int i = start; i < end; ++i) {
       const auto& point = input_jar[i];
@@ -60,8 +60,8 @@ inline void LinuxFindNextPointThread(int tid, const std::vector<shulpin_i_jarvis
 #endif
 }  // namespace
 
-void shulpin_i_jarvis_stl::JarvisSequential::MakeJarvisPassage(std::vector<shulpin_i_jarvis_stl::Point>& input_jar,
-                                                               std::vector<shulpin_i_jarvis_stl::Point>& output_jar) {
+void shulpin_i_jarvis_omp::JarvisSequential::MakeJarvisPassage(std::vector<shulpin_i_jarvis_omp::Point>& input_jar,
+                                                               std::vector<shulpin_i_jarvis_omp::Point>& output_jar) {
   size_t total = input_jar.size();
   output_jar.clear();
 
@@ -88,10 +88,10 @@ void shulpin_i_jarvis_stl::JarvisSequential::MakeJarvisPassage(std::vector<shulp
   } while (active != start);
 }
 
-bool shulpin_i_jarvis_stl::JarvisSequential::PreProcessingImpl() {
-  std::vector<shulpin_i_jarvis_stl::Point> tmp_input;
+bool shulpin_i_jarvis_omp::JarvisSequential::PreProcessingImpl() {
+  std::vector<shulpin_i_jarvis_omp::Point> tmp_input;
 
-  auto* tmp_data = reinterpret_cast<shulpin_i_jarvis_stl::Point*>(task_data->inputs[0]);
+  auto* tmp_data = reinterpret_cast<shulpin_i_jarvis_omp::Point*>(task_data->inputs[0]);
   size_t tmp_size = task_data->inputs_count[0];
   tmp_input.assign(tmp_data, tmp_data + tmp_size);
 
@@ -103,16 +103,16 @@ bool shulpin_i_jarvis_stl::JarvisSequential::PreProcessingImpl() {
   return true;
 }
 
-bool shulpin_i_jarvis_stl::JarvisSequential::ValidationImpl() {
+bool shulpin_i_jarvis_omp::JarvisSequential::ValidationImpl() {
   return (task_data->inputs_count[0] >= 3) && (task_data->inputs[0] != nullptr);
 }
 
-bool shulpin_i_jarvis_stl::JarvisSequential::RunImpl() {
+bool shulpin_i_jarvis_omp::JarvisSequential::RunImpl() {
   MakeJarvisPassage(input_seq_, output_seq_);
   return true;
 }
 
-bool shulpin_i_jarvis_stl::JarvisSequential::PostProcessingImpl() {
+bool shulpin_i_jarvis_omp::JarvisSequential::PostProcessingImpl() {
   auto* result = reinterpret_cast<Point*>(task_data->outputs[0]);
   std::ranges::copy(output_seq_.begin(), output_seq_.end(), result);
   return true;
@@ -122,7 +122,7 @@ bool shulpin_i_jarvis_stl::JarvisSequential::PostProcessingImpl() {
 // this whole nolint block is for NOLINT(readability-function-cognitive-complexity). using it as end-of-line comment
 // doesn't work. all other linter warnings have been resolved
 // NOLINTBEGIN
-void shulpin_i_jarvis_stl::JarvisSTLParallel::MakeJarvisPassageSTL(std::vector<Point>& input_jar,
+void shulpin_i_jarvis_omp::JarvisSTLParallel::MakeJarvisPassageSTL(std::vector<Point>& input_jar,
                                                                    std::vector<Point>& output_jar) {
   output_jar.clear();
   std::unordered_set<Point, PointHash, PointEqual> unique_points;
@@ -209,11 +209,11 @@ void shulpin_i_jarvis_stl::JarvisSTLParallel::MakeJarvisPassageSTL(std::vector<P
 }
 // NOLINTEND
 #else
-void shulpin_i_jarvis_stl::JarvisSTLParallel::MakeJarvisPassageSTL(
-    std::vector<shulpin_i_jarvis_stl::Point>& input_jar, std::vector<shulpin_i_jarvis_stl::Point>& output_jar) {
+void shulpin_i_jarvis_omp::JarvisSTLParallel::MakeJarvisPassageSTL(
+    std::vector<shulpin_i_jarvis_omp::Point>& input_jar, std::vector<shulpin_i_jarvis_omp::Point>& output_jar) {
   output_jar.clear();
 
-  std::unordered_set<shulpin_i_jarvis_stl::Point, shulpin_i_jarvis_stl::PointHash, shulpin_i_jarvis_stl::PointEqual>
+  std::unordered_set<shulpin_i_jarvis_omp::Point, shulpin_i_jarvis_omp::PointHash, shulpin_i_jarvis_omp::PointEqual>
       unique_points;
 
   size_t most_left = 0;
@@ -285,10 +285,10 @@ void shulpin_i_jarvis_stl::JarvisSTLParallel::MakeJarvisPassageSTL(
 }
 #endif
 
-bool shulpin_i_jarvis_stl::JarvisSTLParallel::PreProcessingImpl() {
-  std::vector<shulpin_i_jarvis_stl::Point> tmp_input;
+bool shulpin_i_jarvis_omp::JarvisSTLParallel::PreProcessingImpl() {
+  std::vector<shulpin_i_jarvis_omp::Point> tmp_input;
 
-  auto* tmp_data = reinterpret_cast<shulpin_i_jarvis_stl::Point*>(task_data->inputs[0]);
+  auto* tmp_data = reinterpret_cast<shulpin_i_jarvis_omp::Point*>(task_data->inputs[0]);
   size_t tmp_size = task_data->inputs_count[0];
   tmp_input.assign(tmp_data, tmp_data + tmp_size);
 
@@ -300,16 +300,16 @@ bool shulpin_i_jarvis_stl::JarvisSTLParallel::PreProcessingImpl() {
   return true;
 }
 
-bool shulpin_i_jarvis_stl::JarvisSTLParallel::ValidationImpl() {
+bool shulpin_i_jarvis_omp::JarvisSTLParallel::ValidationImpl() {
   return (task_data->inputs_count[0] >= 3) && (task_data->inputs[0] != nullptr);
 }
 
-bool shulpin_i_jarvis_stl::JarvisSTLParallel::RunImpl() {
+bool shulpin_i_jarvis_omp::JarvisSTLParallel::RunImpl() {
   MakeJarvisPassageSTL(input_stl_, output_stl_);
   return true;
 }
 
-bool shulpin_i_jarvis_stl::JarvisSTLParallel::PostProcessingImpl() {
+bool shulpin_i_jarvis_omp::JarvisSTLParallel::PostProcessingImpl() {
   auto* result = reinterpret_cast<Point*>(task_data->outputs[0]);
   std::ranges::copy(output_stl_.begin(), output_stl_.end(), result);
   return true;
