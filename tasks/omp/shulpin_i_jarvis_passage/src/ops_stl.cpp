@@ -209,7 +209,6 @@ void shulpin_i_jarvis_omp::JarvisSTLParallel::MakeJarvisPassageSTL(std::vector<P
     }
   }
 }
-}
 // NOLINTEND
 #else
 void shulpin_i_jarvis_omp::JarvisSTLParallel::MakeJarvisPassageSTL(
