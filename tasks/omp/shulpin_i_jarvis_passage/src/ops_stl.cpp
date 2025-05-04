@@ -11,7 +11,7 @@
 #include <vector>
 
 #include "core/util/include/util.hpp"
-
+// clang-format off
 namespace {
 int Orientation(const shulpin_i_jarvis_omp::Point& p, const shulpin_i_jarvis_omp::Point& q,
                 const shulpin_i_jarvis_omp::Point& r) {
@@ -23,10 +23,12 @@ int Orientation(const shulpin_i_jarvis_omp::Point& p, const shulpin_i_jarvis_omp
 }
 #ifdef __linux__
 inline void LinuxFindNextPointThread(int tid, const std::vector<shulpin_i_jarvis_omp::Point>& input_jar,
-                                     shulpin_i_jarvis_omp::Point prev_point,
-                                     std::vector<shulpin_i_jarvis_omp::Point>& candidates,
-                                     std::vector<bool>& thread_ready, std::vector<bool>& thread_done, std::mutex& mtx,
-                                     std::condition_variable& cv, bool& stop, int num_threads, int chunk_size) {
+                              const shulpin_i_jarvis_omp::Point& prev_point,
+                              std::vector<shulpin_i_jarvis_omp::Point>& candidates,
+                              std::vector<bool>& thread_ready,
+                              std::vector<bool>& thread_done,
+                              std::mutex& mtx, std::condition_variable& cv, bool& stop,
+                              int num_threads, int chunk_size) {
   while (true) {
     std::unique_lock<std::mutex> lock(mtx);
     cv.wait(lock, [&] { return thread_ready[tid] || stop; });
@@ -152,9 +154,9 @@ void shulpin_i_jarvis_omp::JarvisSTLParallel::MakeJarvisPassageSTL(std::vector<P
   bool stop = false;
 
   for (int i = 0; i < num_threads; ++i) {
-    threads.emplace_back(LinuxFindNextPointThread, i, std::cref(input_jar), prev_point, std::ref(candidates),
-                         std::ref(thread_ready), std::ref(thread_done), std::ref(mtx), std::ref(cv), std::ref(stop),
-                         num_threads, chunk_size);
+    threads.emplace_back(LinuxFindNextPointThread, i, std::cref(input_jar), std::ref(prev_point),
+                         std::ref(candidates), std::ref(thread_ready), std::ref(thread_done),
+                         std::ref(mtx), std::ref(cv), std::ref(stop), num_threads, chunk_size);
   }
 
   do {
@@ -206,6 +208,7 @@ void shulpin_i_jarvis_omp::JarvisSTLParallel::MakeJarvisPassageSTL(std::vector<P
       thread.join();
     }
   }
+}
 }
 // NOLINTEND
 #else
@@ -314,3 +317,4 @@ bool shulpin_i_jarvis_omp::JarvisSTLParallel::PostProcessingImpl() {
   std::ranges::copy(output_stl_.begin(), output_stl_.end(), result);
   return true;
 }
+// clang-format on
