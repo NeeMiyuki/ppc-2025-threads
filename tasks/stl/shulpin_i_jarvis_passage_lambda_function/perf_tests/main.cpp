@@ -9,8 +9,8 @@
 
 #include "core/perf/include/perf.hpp"
 #include "core/task/include/task.hpp"
-#include "stl/shulpin_i_jarvis_passage/include/ops_stl.hpp"
-#include "stl/shulpin_i_jarvis_passage/include/test_modules.hpp"
+#include "stl/shulpin_i_jarvis_passage_lambda_function/include/ops_stl.hpp"
+#include "stl/shulpin_i_jarvis_passage_lambda_function/include/test_modules.hpp"
 
 constexpr int k_ = 100;
 constexpr int kBound = 1000;

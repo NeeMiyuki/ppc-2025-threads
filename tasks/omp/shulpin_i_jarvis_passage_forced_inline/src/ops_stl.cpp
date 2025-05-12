@@ -1,4 +1,4 @@
-#include "omp/shulpin_i_jarvis_passage/include/ops_stl.hpp"
+#include "omp/shulpin_i_jarvis_passage_forced_inline/include/ops_stl.hpp"
 
 #include <algorithm>
 #include <cmath>

@@ -1,4 +1,4 @@
-#include "stl/shulpin_i_jarvis_passage/include/ops_stl.hpp"
+#include "stl/shulpin_i_jarvis_passage_lambda_function/include/ops_stl.hpp"
 
 #include <algorithm>
 #include <cmath>

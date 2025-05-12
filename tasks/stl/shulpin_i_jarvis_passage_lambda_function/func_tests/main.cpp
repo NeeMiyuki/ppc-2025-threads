@@ -4,8 +4,8 @@
 #include <cstddef>
 #include <vector>
 
-#include "stl/shulpin_i_jarvis_passage/include/ops_stl.hpp"
-#include "stl/shulpin_i_jarvis_passage/include/test_modules.hpp"
+#include "stl/shulpin_i_jarvis_passage_lambda_function/include/ops_stl.hpp"
+#include "stl/shulpin_i_jarvis_passage_lambda_function/include/test_modules.hpp"
 
 TEST(shulpin_i_jarvis_stl, square_with_point) {
   std::vector<shulpin_i_jarvis_stl::Point> input = {{0, 0}, {2, 0}, {2, 2}, {0, 2}, {1, 1}};

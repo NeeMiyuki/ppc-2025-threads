@@ -4,8 +4,8 @@
 #include <cstddef>
 #include <vector>
 
-#include "omp/shulpin_i_jarvis_passage/include/ops_stl.hpp"
-#include "omp/shulpin_i_jarvis_passage/include/test_modules.hpp"
+#include "omp/shulpin_i_jarvis_passage_forced_inline/include/ops_stl.hpp"
+#include "omp/shulpin_i_jarvis_passage_forced_inline/include/test_modules.hpp"
 
 TEST(shulpin_i_jarvis_stl_inline, square_with_point) {
   std::vector<shulpin_i_jarvis_omp::Point> input = {{0, 0}, {2, 0}, {2, 2}, {0, 2}, {1, 1}};

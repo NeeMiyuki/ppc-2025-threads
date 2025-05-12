@@ -1,7 +1,7 @@
 #include <cstddef>
 #include <vector>
 
-#include "tbb/shulpin_i_jarvis_passage/include/ops_stl.hpp"
+#include "tbb/shulpin_i_jarvis_passage_standalone_function/include/ops_stl.hpp"
 
 namespace shulpin_tbb_test_module {
 void VerifyResults(const std::vector<shulpin_i_jarvis_tbb::Point> &expected,
