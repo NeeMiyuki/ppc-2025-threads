@@ -95,7 +95,7 @@ void shulpin_i_jarvis_tbb::JarvisTBBParallel::MakeJarvisPassageTBB(
 
   std::vector<Point> hull;
   hull.reserve(n);
-  tbb::concurrent_unordered_set<Point, decltype(&PointHash)> visited(0, &PointHash);
+  tbb::concurrent_unordered_set<Point, PointHash, PointEqual> visited;
 
   int current = start;
   do {
@@ -142,7 +142,7 @@ void shulpin_i_jarvis_tbb::JarvisTBBParallel::MakeJarvisPassageTBB(
     current = candidate;
   } while (current != start);
 
-  output_hull = std::move(hull);
+  output_jar = std::move(hull);
 }
 
 bool shulpin_i_jarvis_tbb::JarvisTBBParallel::PreProcessingImpl() {
