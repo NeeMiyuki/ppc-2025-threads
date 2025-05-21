@@ -114,12 +114,11 @@ void shulpin_i_jarvis_tbb::JarvisTBBParallel::MakeJarvisPassageTBB(
     tbb::parallel_for(tbb::blocked_range<int>(0, n), [&](const tbb::blocked_range<int>& r) {
       int best = initial;
       for (int i = r.begin(); i < r.end(); ++i) {
-        if (i == current) continue;
+        if (i == current) {
+          continue;
+        }
         int orient = Orientation(cur_pt, input_jar[i], input_jar[best]);
-        if (orient == 2 || (orient == 0 && ((input_jar[i].x - cur_pt.x) * (input_jar[i].x - cur_pt.x) +
-                                            (input_jar[i].y - cur_pt.y) * (input_jar[i].y - cur_pt.y)) >
-                                               ((input_jar[best].x - cur_pt.x) * (input_jar[best].x - cur_pt.x) +
-                                                (input_jar[best].y - cur_pt.y) * (input_jar[best].y - cur_pt.y)))) {
+        if (orient == 2) {
           best = i;
         }
       }
@@ -130,11 +129,7 @@ void shulpin_i_jarvis_tbb::JarvisTBBParallel::MakeJarvisPassageTBB(
     for (size_t i = 1; i < local_cands.size(); ++i) {
       int idx = local_cands[i].index;
       int orient = Orientation(cur_pt, input_jar[idx], input_jar[candidate]);
-      if (orient == 2 ||
-          (orient == 0 && ((input_jar[idx].x - cur_pt.x) * (input_jar[idx].x - cur_pt.x) +
-                           (input_jar[idx].y - cur_pt.y) * (input_jar[idx].y - cur_pt.y)) >
-                              ((input_jar[candidate].x - cur_pt.x) * (input_jar[candidate].x - cur_pt.x) +
-                               (input_jar[candidate].y - cur_pt.y) * (input_jar[candidate].y - cur_pt.y)))) {
+      if (orient == 2) {
         candidate = idx;
       }
     }
